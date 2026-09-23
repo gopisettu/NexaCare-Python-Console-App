@@ -1,36 +1,39 @@
-from auth import login
-from admin import admin_menu
-from doctor import doctor_menu
-from patient import patient_menu
+from models.doctor import Doctor
+from models.patient import Patient
+from models.appointment import Appointment
 
 
-def main():
+doctor = Doctor(
+    1,
+    "ravi",
+    "1234",
+    "Ravi",
+    "Cardiology"
+)
 
-    while True:
+patient = Patient(
+    2,
+    "arun",
+    "1234",
+    "Arun",
+    25,
+    "9876543210"
+)
 
-        username, role = login()
-
-        if username is None:
-            continue
-
-        if role == "admin":
-            admin_menu(username)
-
-        elif role == "doctor":
-            doctor_menu(username)
-
-        elif role == "patient":
-            patient_menu(username)
-
-        print("\n1. Login Again")
-        print("2. Exit")
-
-        choice = input("Enter choice: ")
-
-        if choice == "2":
-            print("Thank you for using NexaCare.")
-            break
+appointment = Appointment(
+    1,
+    patient,
+    doctor,
+    "25-09-2026",
+    "Fever"
+)
 
 
-if __name__ == "__main__":
-    main()
+print("===== DOCTOR =====")
+print(doctor.display_info())
+
+print("\n===== PATIENT =====")
+print(patient.display_info())
+
+print("\n===== APPOINTMENT =====")
+print(appointment.display_info())
