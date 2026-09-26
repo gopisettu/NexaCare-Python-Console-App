@@ -13,7 +13,7 @@ class User(ABC):
     ):
         self.user_id = user_id
         self.username = username
-        self._password = password
+        self.password = password
         self.role = role
         self.created_at = datetime.now()
 
