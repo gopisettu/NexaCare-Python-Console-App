@@ -1,7 +1,10 @@
 from models.doctor import Doctor
 from models.patient import Patient
 from models.appointment import Appointment
-from services.auth_service import register_user 
+from services.auth_service import register_user ,login_user
+from menus.admin_menu import admin_menu
+from menus.patient_menu import patient_menu
+from menus.doctor_menu import doctor_menu
 
 
 def register():
@@ -61,6 +64,27 @@ def register():
     else:
         print("Invalid Choice.")
 
+def login():
+    print("\n Login")
+    username=input("Enter username : ")
+    password=input("Enter password : ")
+    user=login_user(username,password)
+    
+    if user is None:
+        print("Invalid username or password ")
+    print("\nLogin Successfull")
+    print("Welcome ,",user["username"])
+    print("Role ,",user["role"])
+    
+    if user["role"]=="ADMIN":
+        admin_menu()
+    elif user["role"]=="PATIENT":
+        patient_menu()
+    elif user["role"]=="DOCTOR":
+        doctor_menu()
+    else:
+        print("Invalid user role.")
+
 def main():
 
     while True:
@@ -78,6 +102,7 @@ def main():
 
         if choice == "1":
             print("\nLogin Selected")
+            login()
 
         elif choice == "2":
             print("\nRegister Selected")

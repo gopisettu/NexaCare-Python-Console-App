@@ -64,3 +64,22 @@ def register_user(
     finally:
         cursor.close()
         connection.close()
+def login_user(username,password):
+    connection=get_connection()
+    cursor=connection.cursor(dictionary=True) # give as json
+    try:
+        query="""
+        select user_id ,username ,password ,role from users 
+        where username = %s and password = %s
+        """
+        values=(username,password)
+        cursor.execute(query,values)
+        user=cursor.fetchone()
+        return user
+    except Exception as err:
+        print("Login Failed : ",err)
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+        
