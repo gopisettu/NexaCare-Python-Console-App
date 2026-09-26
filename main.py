@@ -79,7 +79,7 @@ def login():
     if user["role"]=="ADMIN":
         admin_menu()
     elif user["role"]=="PATIENT":
-        patient_menu()
+        patient_menu(user)
     elif user["role"]=="DOCTOR":
         doctor_menu()
     else:

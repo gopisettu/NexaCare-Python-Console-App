@@ -1,12 +1,13 @@
 from exceptions.exception import DoctorNotFoundException
 from services.patient_service import (
     get_all_doctors,
-    search_doctor_by_specialization
+    search_doctor_by_specialization,
+    book_appointment,
+    view_my_appointments
 )
 
 
-
-def patient_menu():
+def patient_menu(user):
 
     while True:
 
@@ -20,6 +21,7 @@ def patient_menu():
         print("4. View My Appointments")
         print("5. View My Prescriptions")
         print("6. Logout")
+        
 
         choice = input("Enter your choice: ")
 
@@ -96,11 +98,36 @@ def patient_menu():
 
         elif choice == "3":
 
-            print("\nBook Appointment selected.")
+            print("\n========== BOOK APPOINTMENT ==========")
+
+            doctor_id = int(
+        input("Enter doctor ID: ")
+    )
+
+            appointment_date = input(
+        "Enter appointment date (YYYY-MM-DD): "
+    )
+
+            reason = input(
+        "Enter reason for appointment: "
+    )
+
+            success = book_appointment(
+        user_id=user["user_id"],
+        doctor_id=doctor_id,
+        appointment_date=appointment_date,
+        reason=reason
+    )
+
+            if success:
+
+               print("\nAppointment booked successfully.")
 
         elif choice == "4":
 
-            print("\nView My Appointments selected.")
+              print("\nView My Appointments selected.")
+              view_my_appointments(user["user_id"])
+              
 
         elif choice == "5":
 
