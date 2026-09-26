@@ -2,10 +2,8 @@ from services.admin_service import (
     add_doctor,
     add_patient,
     get_all_appointments,
-    delete_patient
-    # get_appointment_statistics,
-    # get_doctor_appointments,
-    # export_patient_details
+    delete_patient,
+    export_patient_details
 )
 def admin_menu():
 
@@ -19,7 +17,8 @@ def admin_menu():
         print("2. Add Patient")
         print("3. View All Appointments")
         print("4. Delete Patient")
-        print("5. Logout")
+        print("5. Export Patient Details")
+        print("6. Logout")
 
         choice = input("Enter your choice: ")
 
@@ -148,7 +147,17 @@ def admin_menu():
                 )
 
         elif choice == "5":
+            print(
+                "\n====== EXPORT PATIENT DETAILS ======")
+            file_name = export_patient_details()
 
+            if file_name:
+                print(
+                    "\nPatient details exported successfully."
+                )
+                print("File:", file_name)
+            
+        elif choice =="6":
             print("\nAdmin logged out successfully.")
             break
 

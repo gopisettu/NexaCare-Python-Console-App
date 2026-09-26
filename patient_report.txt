@@ -1,0 +1,13 @@
+NEXACARE MINI - PATIENT REPORT
+================================
+
+Patient ID: 1
+Name: patient
+Age: 23
+Phone: 9493029167
+
+Patient ID: 2
+Name: patientadmin
+Age: 23
+Phone: 9302910293
+
