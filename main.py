@@ -1,39 +1,95 @@
 from models.doctor import Doctor
 from models.patient import Patient
 from models.appointment import Appointment
+from services.auth_service import register_user 
 
 
-doctor = Doctor(
-    1,
-    "ravi",
-    "1234",
-    "Ravi",
-    "Cardiology"
-)
+def register():
 
-patient = Patient(
-    2,
-    "arun",
-    "1234",
-    "Arun",
-    25,
-    "9876543210"
-)
+    print("\n========================================")
+    print("              REGISTRATION")
+    print("========================================")
 
-appointment = Appointment(
-    1,
-    patient,
-    doctor,
-    "25-09-2026",
-    "Fever"
-)
+    print("1. Register as Patient")
+    print("2. Register as Doctor")
+    print("3. Back")
+
+    choice = input("Enter the Choice: ")
+
+    if choice == "3":
+        return
+
+    username = input("Enter Username: ")
+    password = input("Enter Password: ")
+
+    if choice == "1":
+
+        name = input("Enter Patient Name: ")
+        age = int(input("Enter Age: "))
+        phone = input("Enter Phone: ")
+
+        user_id = register_user(
+            username,
+            password,
+            "PATIENT",
+            name,
+            age,
+            phone
+        )
+
+        if user_id:
+            print("Patient Registered Successfully!")
+            print("User ID:", user_id)
+
+    elif choice == "2":
+
+        name = input("Enter Doctor Name: ")
+        specialization = input("Enter Specialization: ")
+
+        user_id = register_user(
+            username,
+            password,
+            "DOCTOR",
+            name,
+            specialization=specialization
+        )
+
+        if user_id:
+            print("Doctor Registered Successfully!")
+            print("User ID:", user_id)
+
+    else:
+        print("Invalid Choice.")
+
+def main():
+
+    while True:
+
+        print("\n========================================")
+        print("           NEXACARE MINI")
+        print("      Hospital Management System")
+        print("========================================")
+
+        print("1. Login")
+        print("2. Register")
+        print("3. Exit")
+
+        choice = input("Enter your Choice: ")
+
+        if choice == "1":
+            print("\nLogin Selected")
+
+        elif choice == "2":
+            print("\nRegister Selected")
+            register()
+
+        elif choice == "3":
+            print("\nThank you for using NexaCare")
+            break
+
+        else:
+            print("Invalid Choice, try again.")
 
 
-print("===== DOCTOR =====")
-print(doctor.display_info())
-
-print("\n===== PATIENT =====")
-print(patient.display_info())
-
-print("\n===== APPOINTMENT =====")
-print(appointment.display_info())
+if __name__ == "__main__":
+    main()

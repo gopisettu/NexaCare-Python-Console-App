@@ -1,18 +1,25 @@
 import mysql.connector
-try:
-    db=mysql.connector.connect(
-        host="localhost",
-        username="root",
-        database="python_health_care",
-        password="Gopi@123"
-    )
-    print("Successfully Connected Database")
-    cursor=db.cursor()
-    add_user_admin=""" 
-    insert into users(username,password,role) values(%s,%s,%s)
-    """
-    values=("admin","admin@123","ADMIN")
-    cursor.execute(add_user_admin,values)
-    db.commit()
-except mysql.connector.Error as err:
-    print("Error in Connection My Sql",err)
+
+
+def get_connection():
+    try:
+        db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Gopi@123",
+            database="python_health_care"
+        )
+
+        print("Successfully Connected Database")
+        return db
+
+    except mysql.connector.Error as error:
+        print("Error in MySQL connection:", error)
+        return None
+
+
+if __name__ == "__main__":
+    connection = get_connection()
+
+    if connection:
+        connection.close()
