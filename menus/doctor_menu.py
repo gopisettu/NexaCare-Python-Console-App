@@ -1,6 +1,14 @@
-from services.doctor_service import get_all_upcommingAppointments
+from services.doctor_service import (
+    get_all_upcoming_appointments,
+    get_all_completed_appointments,
+    complete_appointment,
+    provide_prescription
+)
+
+from utils.decorators import require_role
 
 
+@require_role("DOCTOR")
 def doctor_menu(user):
 
     while True:
@@ -17,17 +25,82 @@ def doctor_menu(user):
 
         choice = input("Enter your choice: ")
 
+        # ---------------------------------
+        # 1. Upcoming Appointments
+        # ---------------------------------
+
         if choice == "1":
 
-            print("\n========== UPCOMING APPOINTMENTS ==========")
+            print(
+                "\n========== UPCOMING APPOINTMENTS =========="
+            )
 
-            appointments = get_all_upcommingAppointments(
+            appointments = get_all_upcoming_appointments(
                 user["user_id"]
             )
 
             if not appointments:
 
                 print("No upcoming appointments.")
+
+            else:
+
+                for appointment in appointments:
+
+                    print("\n-----------------------------")
+
+                    print(
+                        "Appointment ID:",
+                        appointment["appointment_id"]
+                    )
+
+                    print(
+                        "Patient:",
+                        appointment["patient_name"]
+                    )
+
+                    print(
+                        "Age:",
+                        appointment["age"]
+                    )
+
+                    print(
+                        "Phone:",
+                        appointment["phone"]
+                    )
+
+                    print(
+                        "Date:",
+                        appointment["appointment_date"]
+                    )
+
+                    print(
+                        "Reason:",
+                        appointment["reason"]
+                    )
+
+                    print(
+                        "Status:",
+                        appointment["status"]
+                    )
+
+        # ---------------------------------
+        # 2. Completed Appointments
+        # ---------------------------------
+
+        elif choice == "2":
+
+            print(
+                "\n========== COMPLETED APPOINTMENTS =========="
+            )
+
+            appointments = get_all_completed_appointments(
+                user["user_id"]
+            )
+
+            if not appointments:
+
+                print("No completed appointments.")
 
             else:
 
@@ -60,23 +133,163 @@ def doctor_menu(user):
                         appointment["status"]
                     )
 
-        elif choice == "2":
+                    print(
+                        "Diagnosis:",
+                        appointment["diagnosis"]
+                    )
 
-            print("\nView Completed Appointments selected.")
+                    print(
+                        "Medicine:",
+                        appointment["medicine"]
+                    )
+
+                    print(
+                        "Dosage:",
+                        appointment["dosage"]
+                    )
+
+                    print(
+                        "Duration:",
+                        appointment["duration"]
+                    )
+
+                    print(
+                        "Doctor Notes:",
+                        appointment["doctor_notes"]
+                    )
+
+        # ---------------------------------
+        # 3. Complete Appointment
+        # ---------------------------------
 
         elif choice == "3":
 
-            print("\nComplete Appointment selected.")
+            print(
+                "\n========== COMPLETE APPOINTMENT =========="
+            )
+
+            try:
+
+                appointment_id = int(
+                    input("Enter Appointment ID: ")
+                )
+
+                diagnosis = input(
+                    "Enter Diagnosis: "
+                )
+
+                medicine = input(
+                    "Enter Medicine: "
+                )
+
+                dosage = input(
+                    "Enter Dosage: "
+                )
+
+                duration = input(
+                    "Enter Duration: "
+                )
+
+                doctor_notes = input(
+                    "Enter Doctor Notes: "
+                )
+
+                success = complete_appointment(
+                    appointment_id=appointment_id,
+                    user_id=user["user_id"],
+                    diagnosis=diagnosis,
+                    medicine=medicine,
+                    dosage=dosage,
+                    duration=duration,
+                    doctor_notes=doctor_notes
+                )
+
+                if success:
+
+                    print(
+                        "\nAppointment completed "
+                        "successfully."
+                    )
+
+            except ValueError:
+
+                print(
+                    "\nAppointment ID must be a number."
+                )
+
+        # ---------------------------------
+        # 4. Provide Prescription
+        # ---------------------------------
 
         elif choice == "4":
 
-            print("\nProvide Prescription selected.")
+            print(
+                "\n========== PROVIDE PRESCRIPTION =========="
+            )
+
+            try:
+
+                appointment_id = int(
+                    input("Enter Appointment ID: ")
+                )
+
+                diagnosis = input(
+                    "Enter Diagnosis: "
+                )
+
+                medicine = input(
+                    "Enter Medicine: "
+                )
+
+                dosage = input(
+                    "Enter Dosage: "
+                )
+
+                duration = input(
+                    "Enter Duration: "
+                )
+
+                doctor_notes = input(
+                    "Enter Doctor Notes: "
+                )
+
+                success = provide_prescription(
+                    appointment_id=appointment_id,
+                    user_id=user["user_id"],
+                    diagnosis=diagnosis,
+                    medicine=medicine,
+                    dosage=dosage,
+                    duration=duration,
+                    doctor_notes=doctor_notes
+                )
+
+                if success:
+
+                    print(
+                        "\nPrescription provided "
+                        "successfully."
+                    )
+
+            except ValueError:
+
+                print(
+                    "\nAppointment ID must be a number."
+                )
+
+        # ---------------------------------
+        # 5. Logout
+        # ---------------------------------
 
         elif choice == "5":
 
-            print("\nDoctor logged out successfully.")
+            print(
+                "\nDoctor logged out successfully."
+            )
+
             break
 
         else:
 
-            print("\nInvalid choice. Please try again.")
+            print(
+                "\nInvalid choice. Please try again."
+            )

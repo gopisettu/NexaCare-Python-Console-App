@@ -1,4 +1,4 @@
-from exceptions.exception import DoctorNotFoundException
+from exceptions.exception import DoctorNotFoundError
 from services.patient_service import (
     get_all_doctors,
     search_doctor_by_specialization,
@@ -132,6 +132,7 @@ def patient_menu(user):
         elif choice == "5":
 
             print("\nView My Prescriptions selected.")
+         
 
         elif choice == "6":
 

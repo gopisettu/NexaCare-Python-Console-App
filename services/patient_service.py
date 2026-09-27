@@ -1,6 +1,6 @@
 from database.db import get_connection
 import re
-from exceptions.exception import DoctorNotFoundException
+from exceptions.exception import DoctorNotFoundError
 
 def get_all_doctors(sort_by="name"):
     """Return all doctors sorted by the selected field."""
