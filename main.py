@@ -81,7 +81,7 @@ def login():
     elif user["role"]=="PATIENT":
         patient_menu(user)
     elif user["role"]=="DOCTOR":
-        doctor_menu()
+        doctor_menu(user)
     else:
         print("Invalid user role.")
 
