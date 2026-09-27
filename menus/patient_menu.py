@@ -3,7 +3,8 @@ from services.patient_service import (
     get_all_doctors,
     search_doctor_by_specialization,
     book_appointment,
-    view_my_appointments
+    view_my_appointments,
+    get_my_prescriptions
 )
 
 
@@ -21,7 +22,6 @@ def patient_menu(user):
         print("4. View My Appointments")
         print("5. View My Prescriptions")
         print("6. Logout")
-        
 
         choice = input("Enter your choice: ")
 
@@ -101,38 +101,59 @@ def patient_menu(user):
             print("\n========== BOOK APPOINTMENT ==========")
 
             doctor_id = int(
-        input("Enter doctor ID: ")
-    )
+                input("Enter doctor ID: ")
+            )
 
             appointment_date = input(
-        "Enter appointment date (YYYY-MM-DD): "
-    )
+                "Enter appointment date (YYYY-MM-DD): "
+            )
 
             reason = input(
-        "Enter reason for appointment: "
-    )
+                "Enter reason for appointment: "
+            )
 
             success = book_appointment(
-        user_id=user["user_id"],
-        doctor_id=doctor_id,
-        appointment_date=appointment_date,
-        reason=reason
-    )
+                user_id=user["user_id"],
+                doctor_id=doctor_id,
+                appointment_date=appointment_date,
+                reason=reason
+            )
 
             if success:
 
-               print("\nAppointment booked successfully.")
+                print("\nAppointment booked successfully.")
 
         elif choice == "4":
 
-              print("\nView My Appointments selected.")
-              view_my_appointments(user["user_id"])
-              
+            print("\nView My Appointments selected.")
+            view_my_appointments(user["user_id"])
 
         elif choice == "5":
 
+            
             print("\nView My Prescriptions selected.")
-         
+
+
+            print("\n========== MY PRESCRIPTIONS ==========")
+
+            pres = get_my_prescriptions(user["user_id"])
+
+            if not pres:
+                print("No prescriptions found.")
+
+            else:
+                for p in pres:
+                    print("\n-----------------------------")
+                    print("Appointment ID:", p["appointment_id"])
+                    print("Doctor:", p["doctor_name"])
+                    print("Specialization:", p["specialization"])
+                    print("Appointment Date:", p["appointment_date"])
+                    print("Reason:", p["reason"])
+                    # print("Diagnosis:", p["diagnosis"])
+                    # print("Medicine:", p["medicine"])
+                    # print("Dosage:", p["dosage"])
+                    # print("Duration:", p["duration"])
+                    # print("Doctor Notes:", p["doctor_notes"])
 
         elif choice == "6":
 

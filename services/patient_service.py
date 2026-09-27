@@ -233,3 +233,46 @@ def view_my_appointments(user_id):
     finally:
         cursor.close()
         connection.close()
+def get_my_prescriptions(user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """
+            SELECT
+                ap.appointment_id,
+                d.name AS doctor_name,
+                d.specialization,
+                ap.appointment_date,
+                ap.reason,
+                ap.diagnosis,
+                ap.medicine,
+                ap.dosage,
+                ap.duration,
+                ap.doctor_notes
+            FROM appointments AS ap
+            JOIN patients AS p
+                ON ap.patient_id = p.patient_id
+            JOIN doctors AS d
+                ON ap.doctor_id = d.doctor_id
+            WHERE p.user_id = %s
+              AND ap.status = 'COMPLETED'
+            ORDER BY ap.appointment_date DESC
+        """
+
+        values = (user_id,)
+
+        cursor.execute(query, values)
+
+        prescriptions = cursor.fetchall()
+
+        return prescriptions
+
+    except Exception as err:
+        print("Failed to fetch prescriptions:", err)
+        return []
+
+    finally:
+        cursor.close()
+        connection.close()
