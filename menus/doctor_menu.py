@@ -2,7 +2,9 @@ from services.doctor_service import (
     get_all_upcoming_appointments,
     get_all_completed_appointments,
     complete_appointment,
-    provide_prescription
+    provide_prescription,
+    get_appointment_statistics,
+    get_doctor_wise_appointments
 )
 
 from utils.decorators import require_role
@@ -21,7 +23,9 @@ def doctor_menu(user):
         print("2. View Completed Appointments")
         print("3. Complete Appointment")
         print("4. Provide Prescription")
-        print("5. Logout")
+        print("5. Appointment Statistics")
+        print("6. Get doctor vise Appointment")
+        print("7. Logout")
 
         choice = input("Enter your choice: ")
 
@@ -276,11 +280,84 @@ def doctor_menu(user):
                     "\nAppointment ID must be a number."
                 )
 
-        # ---------------------------------
-        # 5. Logout
-        # ---------------------------------
-
+        
         elif choice == "5":
+
+            print("\n========== APPOINTMENT STATISTICS ==========")
+
+            statistics =get_appointment_statistics("BOOKED")
+
+            if statistics is None:
+                print("Unable to generate statistics.")
+
+            else:
+                print(
+                    "Total Appointments:",
+                    statistics["total"]
+                )
+
+                print("\nAppointments by Status:")
+
+                for status, count in statistics["status_count"].items():
+                    print(f"{status}: {count}")
+
+                print("\nAppointments by Doctor:")
+
+                for doctor, count in statistics["doctor_count"].items():
+                    print(f"{doctor}: {count}")
+        elif choice == "6":
+
+            print(
+                "\n========== DOCTOR-WISE APPOINTMENTS =========="
+            )
+
+            doctor_data = get_doctor_wise_appointments()
+
+            if not doctor_data:
+                print("No appointments found.")
+
+            else:
+
+                for doctor_name, appointments in doctor_data.items():
+
+                    print(f"\nDoctor: {doctor_name}")
+                    print("--------------------------------")
+
+                    for appointment in appointments:
+
+                        print(
+                            "Appointment ID:",
+                            appointment["appointment_id"]
+                        )
+
+                        print(
+                            "Patient:",
+                            appointment["patient_name"]
+                        )
+
+                        print(
+                            "Specialization:",
+                            appointment["specialization"]
+                        )
+
+                        print(
+                            "Date:",
+                            appointment["appointment_date"]
+                        )
+
+                        print(
+                            "Reason:",
+                            appointment["reason"]
+                        )
+
+                        print(
+                            "Status:",
+                            appointment["status"]
+                        )
+
+                        print()
+                    
+        elif choice == "7":
 
             print(
                 "\nDoctor logged out successfully."

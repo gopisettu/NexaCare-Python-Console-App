@@ -1,4 +1,6 @@
 from datetime import datetime
+from collections import Counter, defaultdict
+
 
 from database.db import get_connection
 from exceptions.exception import AppointmentAlreadyCompletedError,AppointmentNotFoundError
@@ -324,3 +326,104 @@ def provide_prescription(
 
         cursor.close()
         connection.close()
+        
+def get_appointment_statistics(*statuses):
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """
+            SELECT
+                a.status,
+                d.name AS doctor_name
+            FROM appointments AS a
+            JOIN doctors AS d
+                ON a.doctor_id = d.doctor_id
+        """
+
+        cursor.execute(query)
+
+        appointments = cursor.fetchall()
+
+        if statuses:
+            appointments = list(
+                filter(
+                    lambda appointment:
+                    appointment["status"] in statuses,
+                    appointments
+                )
+            )
+
+        status_count = Counter(
+            appointment["status"]
+            for appointment in appointments
+        )
+
+        doctor_count = Counter(
+            appointment["doctor_name"]
+            for appointment in appointments
+        )
+
+        return {
+            "total": len(appointments),
+            "status_count": status_count,
+            "doctor_count": doctor_count
+        }
+
+    except Exception as error:
+        print("Failed to generate statistics:", error)
+        return None
+
+    finally:
+        cursor.close()
+        connection.close()
+        
+def get_doctor_wise_appointments():
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """
+            SELECT
+                a.appointment_id,
+                d.name AS doctor_name,
+                d.specialization,
+                p.name AS patient_name,
+                a.appointment_date,
+                a.reason,
+                a.status
+            FROM appointments AS a
+            JOIN doctors AS d
+                ON a.doctor_id = d.doctor_id
+            JOIN patients AS p
+                ON a.patient_id = p.patient_id
+            ORDER BY d.name, a.appointment_date
+        """
+
+        cursor.execute(query)
+
+        appointments = cursor.fetchall()
+
+        doctor_appointments = defaultdict(list)
+
+        for appointment in appointments:
+
+            doctor_appointments[
+                appointment["doctor_name"]
+            ].append(appointment)
+
+        return doctor_appointments
+
+    except Exception as error:
+        print(
+            "Failed to fetch doctor-wise appointments:",
+            error
+        )
+        return {}
+
+    finally:
+        cursor.close()
+        connection.close()
+        
