@@ -5,6 +5,7 @@ from services.auth_service import register_user ,login_user
 from menus.admin_menu import admin_menu
 from menus.patient_menu import patient_menu
 from menus.doctor_menu import doctor_menu
+from exceptions.exception import UsernameNotFoundError
 
 
 def register():
@@ -64,27 +65,44 @@ def register():
     else:
         print("Invalid Choice.")
 
-def login():
-    print("\n Login")
-    username=input("Enter username : ")
-    password=input("Enter password : ")
-    user=login_user(username,password)
-    
-    if user is None:
-        print("Invalid username or password ")
-    print("\nLogin Successfull")
-    print("Welcome ,",user["username"])
-    print("Role ,",user["role"])
-    
-    if user["role"]=="ADMIN":
-        admin_menu()
-    elif user["role"]=="PATIENT":
-        patient_menu(user)
-    elif user["role"]=="DOCTOR":
-        doctor_menu(user)
-    else:
-        print("Invalid user role.")
 
+
+
+def login():
+
+    print("\nLogin")
+
+    username = input("Enter username: ")
+    password = input("Enter password: ")
+
+    try:
+
+        user = login_user(username, password)
+
+        if user is None:
+            print("Invalid password.")
+            return
+
+        print("\nLogin Successful")
+        print("Welcome,", user["username"])
+        print("Role:", user["role"])
+
+        if user["role"] == "ADMIN":
+            admin_menu(user)
+
+        elif user["role"] == "PATIENT":
+            patient_menu(user)
+
+        elif user["role"] == "DOCTOR":
+            doctor_menu(user)
+
+    except UsernameNotFoundError as error:
+
+        print("\nLogin Failed:", error)
+
+    except Exception as error:
+
+        print("\nUnexpected error:", error)
 def main():
 
     while True:

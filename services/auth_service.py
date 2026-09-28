@@ -1,6 +1,5 @@
 from database.db import get_connection
-
-
+from exceptions.exception import UsernameNotFoundError
 def register_user(
     username,
     password,
@@ -64,22 +63,42 @@ def register_user(
     finally:
         cursor.close()
         connection.close()
-def login_user(username,password):
-    connection=get_connection()
-    cursor=connection.cursor(dictionary=True) # give as json
+  
+
+
+def login_user(username, password):
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
     try:
-        query="""
-        select user_id ,username ,password ,role from users 
-        where username = %s and password = %s
+        query = """
+            SELECT user_id, username, password, role
+            FROM users
+            WHERE username = %s
         """
-        values=(username,password)
-        cursor.execute(query,values)
-        user=cursor.fetchone()
+
+        cursor.execute(query, (username,))
+
+        user = cursor.fetchone()
+
+        if user is None:
+            raise UsernameNotFoundError(
+                "Username not found."
+            )
+
+        if user["password"] != password:
+            return None
+
         return user
+
+    except UsernameNotFoundError:
+        raise
+
     except Exception as err:
-        print("Login Failed : ",err)
+        print("Login Failed:", err)
         return None
+
     finally:
         cursor.close()
         connection.close()
-        

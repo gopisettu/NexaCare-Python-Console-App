@@ -3,7 +3,6 @@ from services.doctor_service import (
     get_all_completed_appointments,
     complete_appointment,
     provide_prescription,
-    get_appointment_statistics,
     get_doctor_wise_appointments
 )
 
@@ -23,9 +22,9 @@ def doctor_menu(user):
         print("2. View Completed Appointments")
         print("3. Complete Appointment")
         print("4. Provide Prescription")
-        print("5. Appointment Statistics")
-        print("6. Get doctor vise Appointment")
-        print("7. Logout")
+    
+        print("5. Get doctor vise Appointment")
+        print("6. Logout")
 
         choice = input("Enter your choice: ")
 
@@ -281,31 +280,8 @@ def doctor_menu(user):
                 )
 
         
+        
         elif choice == "5":
-
-            print("\n========== APPOINTMENT STATISTICS ==========")
-
-            statistics =get_appointment_statistics("BOOKED")
-
-            if statistics is None:
-                print("Unable to generate statistics.")
-
-            else:
-                print(
-                    "Total Appointments:",
-                    statistics["total"]
-                )
-
-                print("\nAppointments by Status:")
-
-                for status, count in statistics["status_count"].items():
-                    print(f"{status}: {count}")
-
-                print("\nAppointments by Doctor:")
-
-                for doctor, count in statistics["doctor_count"].items():
-                    print(f"{doctor}: {count}")
-        elif choice == "6":
 
             print(
                 "\n========== DOCTOR-WISE APPOINTMENTS =========="
@@ -357,7 +333,7 @@ def doctor_menu(user):
 
                         print()
                     
-        elif choice == "7":
+        elif choice == "6":
 
             print(
                 "\nDoctor logged out successfully."

@@ -327,58 +327,7 @@ def provide_prescription(
         cursor.close()
         connection.close()
         
-def get_appointment_statistics(*statuses):
 
-    connection = get_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    try:
-        query = """
-            SELECT
-                a.status,
-                d.name AS doctor_name
-            FROM appointments AS a
-            JOIN doctors AS d
-                ON a.doctor_id = d.doctor_id
-        """
-
-        cursor.execute(query)
-
-        appointments = cursor.fetchall()
-
-        if statuses:
-            appointments = list(
-                filter(
-                    lambda appointment:
-                    appointment["status"] in statuses,
-                    appointments
-                )
-            )
-
-        status_count = Counter(
-            appointment["status"]
-            for appointment in appointments
-        )
-
-        doctor_count = Counter(
-            appointment["doctor_name"]
-            for appointment in appointments
-        )
-
-        return {
-            "total": len(appointments),
-            "status_count": status_count,
-            "doctor_count": doctor_count
-        }
-
-    except Exception as error:
-        print("Failed to generate statistics:", error)
-        return None
-
-    finally:
-        cursor.close()
-        connection.close()
-        
 def get_doctor_wise_appointments():
 
     connection = get_connection()

@@ -1,4 +1,7 @@
 from database.db import get_connection
+from collections import Counter, defaultdict
+from utils.appointment_iterator import AppointmentIterator
+
 
 
 def add_doctor(username, password, name, specialization):
@@ -243,3 +246,142 @@ def export_patient_details():
 
         cursor.close()
         connection.close()
+   
+def get_appointment_statistics(*statuses):
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """
+            SELECT
+                a.status,
+                d.name AS doctor_name
+            FROM appointments AS a
+            JOIN doctors AS d
+                ON a.doctor_id = d.doctor_id
+        """
+
+        cursor.execute(query)
+
+        appointments = cursor.fetchall()
+
+        if statuses:
+            appointments = list(
+                filter(
+                    lambda appointment:
+                    appointment["status"] in statuses,
+                    appointments
+                )
+            )
+
+        status_count = Counter(
+            appointment["status"]
+            for appointment in appointments
+        )
+
+        doctor_count = Counter(
+            appointment["doctor_name"]
+            for appointment in appointments
+        )
+
+        return {
+            "total": len(appointments),
+            "status_count": status_count,
+            "doctor_count": doctor_count
+        }
+
+    except Exception as error:
+        print("Failed to generate statistics:", error)
+        return None
+
+    finally:
+        cursor.close()
+        connection.close()
+
+def generate_patient_report():
+
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        query = """
+            SELECT
+                patient_id,
+                name,
+                age,
+                phone
+            FROM patients
+            ORDER BY patient_id
+        """
+
+        cursor.execute(query)
+
+        patients = cursor.fetchall()
+
+        for patient in patients:
+            yield patient
+
+    except Exception as error:
+
+        print(
+            "Failed to generate patient report:",
+            error
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+def export_patient_details():
+
+    file_name = "patient_report.txt"
+
+    try:
+
+        with open(
+            file_name,
+            "w",
+            encoding="utf-8"
+        ) as file:
+
+            file.write(
+                "NEXACARE MINI - PATIENT REPORT\n"
+            )
+
+            file.write(
+                "================================\n\n"
+            )
+
+            for patient in generate_patient_report():
+
+                file.write(
+                    f"Patient ID: "
+                    f"{patient['patient_id']}\n"
+                )
+
+                file.write(
+                    f"Name: {patient['name']}\n"
+                )
+
+                file.write(
+                    f"Age: {patient['age']}\n"
+                )
+
+                file.write(
+                    f"Phone: {patient['phone']}\n"
+                )
+
+                file.write("\n")
+
+        return file_name
+
+    except Exception as error:
+
+        print(
+            "Failed to export patient details:",
+            error
+        )
+
+        return None

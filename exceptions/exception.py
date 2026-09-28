@@ -8,3 +8,5 @@ class AppointmentNotFoundError(Exception):
 
 class AppointmentAlreadyCompletedError(Exception):
     """Raised when a completed appointment is modified incorrectly."""
+class UsernameNotFoundError(Exception):
+    """Raised when the username does not exist."""

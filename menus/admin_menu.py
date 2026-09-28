@@ -3,7 +3,8 @@ from services.admin_service import (
     add_patient,
     get_all_appointments,
     delete_patient,
-    export_patient_details
+    export_patient_details,
+    get_appointment_statistics
 )
 def admin_menu():
 
@@ -18,7 +19,8 @@ def admin_menu():
         print("3. View All Appointments")
         print("4. Delete Patient")
         print("5. Export Patient Details")
-        print("6. Logout")
+        print("6. Appointment Statistics")
+        print("7. Logout")
 
         choice = input("Enter your choice: ")
 
@@ -149,13 +151,38 @@ def admin_menu():
         elif choice == "5":
             print(
                 "\n====== EXPORT PATIENT DETAILS ======")
-            file_name = export_patient_details()
+            file_name =  export_patient_details()
 
             if file_name:
                 print(
                     "\nPatient details exported successfully."
                 )
                 print("File:", file_name)
+        
+        elif choice == "6":
+        
+                    print("\n========== APPOINTMENT STATISTICS ==========")
+        
+                    statistics =get_appointment_statistics("BOOKED")
+        
+                    if statistics is None:
+                        print("Unable to generate statistics.")
+        
+                    else:
+                        print(
+                            "Total Appointments:",
+                            statistics["total"]
+                        )
+        
+                        print("\nAppointments by Status:")
+        
+                        for status, count in statistics["status_count"].items():
+                            print(f"{status}: {count}")
+        
+                        print("\nAppointments by Doctor:")
+        
+                        for doctor, count in statistics["doctor_count"].items():
+                            print(f"{doctor}: {count}")
             
         elif choice =="6":
             print("\nAdmin logged out successfully.")
